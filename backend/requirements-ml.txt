@@ -1,0 +1,12 @@
+# Install only the integrations you intend to operate; several require large model downloads.
+transformers>=4.45
+accelerate>=1.0
+torch>=2.4
+ultralytics>=8.3
+opencv-python-headless>=4.10
+faster-whisper>=1.0
+soundfile>=0.12
+pytesseract>=0.3
+pandas>=2.2
+scikit-learn>=1.5
+pyannote.audio>=3.3

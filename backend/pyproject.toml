@@ -1,0 +1,14 @@
+[project]
+name = "theo-backend"
+version = "1.1.0"
+description = "Trusted Evidence-based Annotation & Quality Orchestration"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 110
+select = ["F"]
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
