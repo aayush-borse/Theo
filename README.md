@@ -8,7 +8,34 @@
 
 **Turning raw multimodal data into reliable, traceable and ML-ready datasets.**
 
-[Overview](#overview) · [Architecture](#architecture) · [Capabilities](#core-capabilities) · [Getting Started](#getting-started) · [Documentation](#documentation)
+<div align="center">
+
+<a href="#overview">
+<img src="https://img.shields.io/badge/Overview-6C4AB6?style=for-the-badge" />
+</a>
+<a href="#core-capabilities">
+<img src="https://img.shields.io/badge/Capabilities-6C4AB6?style=for-the-badge" />
+</a>
+<a href="#architecture">
+<img src="https://img.shields.io/badge/Architecture-6C4AB6?style=for-the-badge" />
+</a>
+<a href="#getting-started">
+<img src="https://img.shields.io/badge/Get%20Started-6C4AB6?style=for-the-badge" />
+</a>
+<a href="#documentation">
+<img src="https://img.shields.io/badge/Documentation-6C4AB6?style=for-the-badge" />
+</a>
+
+<br><br>
+
+<a href="https://github.com/aayush-borse/Theo/issues">
+<img src="https://img.shields.io/badge/Report%20a%20Bug-18181B?style=for-the-badge&logo=github" />
+</a>
+<a href="https://github.com/aayush-borse/Theo">
+<img src="https://img.shields.io/badge/View%20Repository-18181B?style=for-the-badge&logo=github" />
+</a>
+
+</div>
 
 </div>
 
