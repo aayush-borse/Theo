@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/theo-banner.png" alt="THEO — Trusted Human-in-the-Loop Multimodal Data Engine" width="100%">
+<img src="docs/assets/theo-banner.png" alt="THEO — Trusted Human-in-the-Loop Multimodal Data Engine" width="100%">
 
 # THEO
 
