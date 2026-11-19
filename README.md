@@ -205,7 +205,6 @@ THEO follows a modular architecture that separates application orchestration, an
 | NLP                   | Hugging Face Transformers                         |
 | Document processing   | PyMuPDF, OCR integrations                         |
 | Audio processing      | faster-whisper, optional diarization integrations |
-| Data analysis         | Pandas, NumPy, SciPy                              |
 | Frontend              | HTML, CSS, JavaScript                             |
 | Deployment            | Docker, Docker Compose                            |
 | Testing               | pytest                                            |
@@ -239,8 +238,6 @@ THEO/
 ├── docs/
 │
 ├── data/
-│
-├── scripts/
 │
 ├── .github/
 │

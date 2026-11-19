@@ -32,6 +32,7 @@ class Sample(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     dataset: Mapped[Dataset] = relationship(back_populates="samples")
     annotations: Mapped[list["Annotation"]] = relationship(back_populates="sample", cascade="all, delete-orphan")
+    __table_args__ = (UniqueConstraint("dataset_id", "sha256", name="uq_sample_dataset_sha256"),)
 
 class Annotation(Base):
     __tablename__ = "annotations"

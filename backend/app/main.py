@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
 from app.core.database import get_db, SessionLocal
 from app.core.config import UPLOAD_DIR, EXPORT_DIR, MAX_UPLOAD_MB, ROOT, ALLOWED_ORIGINS
 from app.domain.models import Dataset, Sample, Annotation, AuditEvent, DatasetRelease, ProcessingJob, ReviewDecision, User, GoldLabel, EvaluationRun, now
@@ -22,7 +23,11 @@ from app.services.quality import report
 if os.getenv("THEO_AUTO_MIGRATE","true").lower()=="true":
     from alembic import command
     from alembic.config import Config
-    alembic_config=Config(str(Path(__file__).resolve().parents[1]/"alembic.ini"))
+    _backend_root=Path(__file__).resolve().parents[1]
+    alembic_config=Config(str(_backend_root/"alembic.ini"))
+    # Resolve the script location relative to the backend root so migration
+    # discovery does not depend on the current working directory.
+    alembic_config.set_main_option("script_location", str(_backend_root/"migrations"))
     command.upgrade(alembic_config,"head")
 
 app=FastAPI(title="THEO API", version="1.1.0", description="Trusted Evidence-based Annotation & Quality Orchestration for multimodal datasets.")
@@ -32,7 +37,7 @@ app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_credenti
 async def optional_authentication_gate(request, call_next):
     """Set THEO_AUTH_REQUIRED=true in deployed environments to protect every API route."""
     path=request.url.path
-    if os.getenv("THEO_AUTH_REQUIRED","false").lower()=="true" and request.method!="OPTIONS" and path.startswith("/api/") and path not in ("/api/health","/api/auth/login","/api/auth/register"):
+    if os.getenv("THEO_AUTH_REQUIRED","false").lower()=="true" and request.method!="OPTIONS" and path.startswith("/api/") and path not in ("/api/health","/api/health/ready","/api/auth/login","/api/auth/register"):
         from starlette.responses import JSONResponse
         header=request.headers.get("authorization","")
         if not header.startswith("Bearer "):
@@ -242,7 +247,14 @@ async def upload_samples(dataset_id:int, files:list[UploadFile]=File(...), db:Se
         sample=Sample(dataset_id=d.id,filename=safe,content_type=upload.content_type or mimetypes.guess_type(safe)[0] or "application/octet-stream",storage_path=str(path),size_bytes=len(raw),sha256=digest)
         if d.modality=="text": sample.extracted_text=raw.decode("utf-8",errors="replace")[:500000]
         elif d.modality=="tabular": sample.extracted_text=raw.decode("utf-8-sig",errors="replace")[:500000]
-        db.add(sample); db.flush(); created.append(_sample_dict(sample)); _audit(db,"sample",sample.id,"uploaded",{"sha256":digest,"size_bytes":len(raw)})
+        db.add(sample)
+        try:
+            db.flush()
+        except IntegrityError:
+            # Concurrent upload race lost the dedup race; treat as a duplicate.
+            db.rollback()
+            continue
+        created.append(_sample_dict(sample)); _audit(db,"sample",sample.id,"uploaded",{"sha256":digest,"size_bytes":len(raw)})
     db.commit(); return {"uploaded":len(created),"duplicates_skipped":len(files)-len(created),"samples":created}
 
 @app.get("/api/samples/{sample_id}")

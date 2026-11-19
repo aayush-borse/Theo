@@ -19,6 +19,8 @@ jobs:
       - run: PYTHONPATH=backend pytest backend/tests -q
       - run: python -m compileall -q backend/app
       - run: bandit -q -r backend/app
+      - run: mypy backend/app --ignore-missing-imports
+      - run: pip-audit -r backend/requirements.txt
   frontend:
     runs-on: ubuntu-latest
     steps:

@@ -57,7 +57,7 @@ Modality schemas are intentionally not flattened into one generic label structur
 - PostgreSQL is used by the Docker Compose profile.
 - Original assets and generated exports live outside SQL tables.
 - Alembic migration scripts live in `backend/migrations`.
-- `Base.metadata.create_all` remains enabled for frictionless local bootstrap; use Alembic for controlled schema evolution and deployed databases.
+- `THEO_AUTO_MIGRATE=true` (the default) runs `alembic upgrade head` on application startup, which is the only bootstrap path used in local and deployed environments. Use Alembic for all schema evolution.
 
 ## Job execution
 

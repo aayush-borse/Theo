@@ -1,6 +1,6 @@
 from .celery_app import celery_app
 
-@celery_app.task(name="theo.annotate_dataset",bind=True,max_retries=3,default_retry_delay=10)
+@celery_app.task(name="theo.annotate_dataset",bind=True,max_retries=3,default_retry_delay=10,time_limit=300,soft_time_limit=240)
 def annotate_dataset_task(self, job_id: str):
     # Import lazily so workers share the same application service and DB configuration.
     from app.main import _run_annotation_job
